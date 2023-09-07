@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using TechnicalTest2023;
 using TechnicalTest2023.DbContext;
+using TechnicalTest2023.Logging;
+using TechnicalTest2023.Services.Impl;
+using TechnicalTest2023.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<HttpContextEnricher>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 builder.Services.AddProblemDetails(options =>

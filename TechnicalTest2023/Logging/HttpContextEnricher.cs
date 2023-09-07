@@ -1,7 +1,7 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
 
-namespace TechnicalTest2023
+namespace TechnicalTest2023.Logging
 {
     /// <summary>
     /// Taken from https://medium.com/@kerimemurla/how-to-create-a-serilog-enricher-that-adds-http-information-to-your-logs-1588fc83ccbb
