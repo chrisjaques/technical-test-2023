@@ -1,15 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 
 namespace TechnicalTest2023.Models
 {
-    [Index(nameof(StreetNumber), nameof(StreetName), nameof(City))]
-    public sealed class Address
+    public class AddressDTO
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? Id { get; set; }
         [IntegerValidator(MinValue = 0, MaxValue = 100000, ExcludeRange = true)]
         public required int StreetNumber { get; set; }
         [MaxLength(50, ErrorMessage = "Street number suffix must be at most 50 characters")]

@@ -31,14 +31,7 @@ builder.Services.AddProblemDetails(options =>
         var error = context.HttpContext.Features.Get<EnrichedErrors>();
         if (error == null) return;
 
-        var type = error.EnrichedError switch
-        {
-            EnrichedErrorType.InvalidUserInputError =>
-                "Invalid input provided.",
-            _ => "User already exists.",
-        };
-
-        context.ProblemDetails.Type = type;
+        context.ProblemDetails.Type = error.ErrorType;
         context.ProblemDetails.Detail = error.ErrorDetails;
     };
 });

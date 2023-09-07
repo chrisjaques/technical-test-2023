@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TechnicalTest2023.DbContext;
 using TechnicalTest2023.Logging;
 using TechnicalTest2023.Models;
 using TechnicalTest2023.Services.Interfaces;
@@ -11,23 +9,23 @@ namespace TechnicalTest2023.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserContext _context;
         private readonly ILogger<UsersController> _logger;
+        // Use a service to prevent logic from being added to controllers, also discourages access to db context within a controller
         private readonly IUserService _userService;
 
-        public UsersController(UserContext context, ILogger<UsersController> logger, IUserService userService)
+        public UsersController(ILogger<UsersController> logger, IUserService userService)
         {
-            _context = context;
             _logger = logger;
             _userService = userService;
         }
 
         // GET: api/Users
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
         {
             var result = new List<UserDTO>();
-            var existingUsers = await _context.Users.Include(a => a.Address).ToListAsync();
+            var existingUsers = await _userService.GetUsers();
             foreach (var existingUser in existingUsers)
             {
                 result.Add(UserDTO.Convert(existingUser));
@@ -37,9 +35,11 @@ namespace TechnicalTest2023.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserDTO>> GetUserById(int id)
         { 
-            var user = await _context.Users.Include(x => x.Address).SingleOrDefaultAsync(x => x.Id == id);
+            var user = await _userService.GetUserById(id);
 
             if (user == null)
             {
@@ -51,7 +51,10 @@ namespace TechnicalTest2023.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> PostUser(User user)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<UserDTO>> PostUser(UserDTO user)
         {
             if (!ModelState.IsValid)
             {
@@ -66,9 +69,9 @@ namespace TechnicalTest2023.Controllers
                 return BadRequest();
             }
 
-            var result = await _userService.TryToCreateUser(user);
+            var userCreated = await _userService.TryToCreateUser(user);
 
-            if (!result)
+            if (userCreated is null)
             {
                 var error = new EnrichedErrors
                 {
@@ -80,7 +83,8 @@ namespace TechnicalTest2023.Controllers
                 return Conflict();
             }
 
-            return CreatedAtAction(nameof(GetUserById), new { id = user.Id },  UserDTO.Convert(user));
+            // We know userCreated is not null at this point so suppress warning
+            return CreatedAtAction(nameof(GetUserById), new { id = userCreated.Id },  UserDTO.Convert(userCreated));
         }
     }
 }

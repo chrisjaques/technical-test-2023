@@ -17,8 +17,9 @@ namespace TechnicalTest2023.Services.Impl
             _logger = logger;
         }
 
-        public async Task<bool> TryToCreateUser(User user)
+        public async Task<User?> TryToCreateUser(UserDTO userDto)
         {
+            var user = User.Convert(userDto);
             var existingUsers = FindUsersByName(user.FirstName, user.LastName);
 
             if (existingUsers is not null)
@@ -33,7 +34,7 @@ namespace TechnicalTest2023.Services.Impl
 
                     _logger.LogError($"Unable to add user, as user already exists with id: [{existingUser.Id}]");
 
-                    return false;
+                    return null;
                 }
             }
 
@@ -45,12 +46,29 @@ namespace TechnicalTest2023.Services.Impl
             catch (Exception e)
             {
                 _logger.LogError(e, "Unable to save user");
-                return false;
+                return null;
             }
 
-            return true;
+            return user;
         }
 
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            return await _context.Users.Include(a => a.Address).ToListAsync();
+        }
+
+        public async Task<User?> GetUserById(int id)
+        {
+            return await _context.Users.Include(x => x.Address).SingleOrDefaultAsync(x => x.Id == id);
+        }
+
+        /// <summary>
+        /// Assumes a small database where this approach is fine, as it doesn't scale the best, eventually new indexes will need to be added and
+        /// the query updated to include elements from the address i.e. street name or city.
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <returns></returns>
         private IEnumerable<User>? FindUsersByName(string firstName, string lastName)
         {
             return _context.Users?.Where(x =>
