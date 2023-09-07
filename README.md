@@ -7,6 +7,7 @@
 
 ## Assumptions
 Validation
+
 	- User
 		- First name length >= 1 and <= 250
 		- Last name length >= 1 and <= 250
