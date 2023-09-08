@@ -38,6 +38,3 @@ A single person can have multiple addresses and therefore multiple accounts
 
 ## Problems
 - Date of birth format isn't ideal, expects yyyy-mm-dd, would prefer it took dd/mm/yyyy
-
-## Todo list
-- Date validation requires fluent validation to make sure it's in the past and within the last 150 years (?)

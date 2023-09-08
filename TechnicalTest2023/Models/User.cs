@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FluentValidation;
+using TechnicalTest2023.Validators;
 
 namespace TechnicalTest2023.Models
 {
@@ -23,7 +25,7 @@ namespace TechnicalTest2023.Models
 
         public static User Convert(UserDTO userDto)
         {
-            return new User
+            var user = new User
             {
                 FirstName = userDto.FirstName,
                 LastName = userDto.LastName,
@@ -38,6 +40,11 @@ namespace TechnicalTest2023.Models
                     Suburb = userDto.Address.Suburb
                 }
             };
+
+            var validator = new UserValidator();
+            validator.ValidateAndThrow(user);
+
+            return user;
         }
     }
 }

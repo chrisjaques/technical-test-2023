@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using FluentValidation;
+using TechnicalTest2023.Validators;
 
 namespace TechnicalTest2023.Models
 {
@@ -17,7 +19,7 @@ namespace TechnicalTest2023.Models
 
         public static UserDTO Convert(User user)
         {
-            return new UserDTO
+            var userDto = new UserDTO
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -32,6 +34,11 @@ namespace TechnicalTest2023.Models
                     Suburb = user.Address.Suburb
                 }
             };
+
+            var validator = new UserDTOValidator();
+            validator.ValidateAndThrow(userDto);
+
+            return userDto;
         }
     }
 }

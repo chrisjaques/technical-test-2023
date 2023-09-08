@@ -2,6 +2,7 @@
 using TechnicalTest2023.Logging;
 using TechnicalTest2023.Models;
 using TechnicalTest2023.Services.Interfaces;
+using TechnicalTest2023.Validators;
 
 namespace TechnicalTest2023.Controllers
 {
@@ -56,7 +57,11 @@ namespace TechnicalTest2023.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<UserDTO>> PostUser(UserDTO user)
         {
-            if (!ModelState.IsValid)
+            // Fail fast by checking if it's valid here, even though it'll also get checked later during conversion
+            var validator = new UserDTOValidator();
+            var validationResult = await validator.ValidateAsync(user);
+
+            if (!ModelState.IsValid || !validationResult.IsValid)
             {
                 var error = new EnrichedErrors
                 {
