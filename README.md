@@ -24,6 +24,7 @@ Validation
 	- User
 		- First name length >= 1 and <= 250
 		- Last name length >= 1 and <= 250
+		- Date of birth >= today but 150 years ago and <= today
 	- Address
 		- Street number >= 0 and <= 100,000
 		- Street number suffix length <= 50
@@ -36,5 +37,7 @@ An unlimited amount of people can live at an address.
 
 A single person can have multiple addresses and therefore multiple accounts
 
+Allow any date of birth to exist in the database, we're trusting the validation to occur before the insertion as otherwise it'll be unusable as time progressed
+
 ## Problems
-- Date of birth format isn't ideal, expects yyyy-mm-dd, would prefer it took dd/mm/yyyy
+- Date of birth format isn't ideal, expects yyyy-mm-dd, would prefer it was formatted dd/mm/yyyy 

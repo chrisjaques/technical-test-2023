@@ -57,7 +57,7 @@ namespace TechnicalTest2023.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<UserDTO>> PostUser(UserDTO user)
         {
-            // Fail fast by checking if it's valid here, even though it'll also get checked later during conversion
+            // Fail fast by checking if it's valid here, this is explicitly for date of birth
             var validator = new UserDTOValidator();
             var validationResult = await validator.ValidateAsync(user);
 

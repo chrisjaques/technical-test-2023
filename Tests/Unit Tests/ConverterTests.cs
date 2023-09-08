@@ -6,15 +6,27 @@ namespace Tests.Unit_Tests
     public class ConverterTests
     {
         [Fact]
-        public void Convert_to_userDTO_should_throw()
+        public void Convert_invalid_user_to_userDTO_should_match()
         {
+            // Conscious decision not to validate date of birth when retrieving from the db, overtime it would create an unusable environment 
             var invalidUser = GetUser(false);
 
-            Assert.Throws<ValidationException>(() => UserDTO.Convert(invalidUser));
+            var validUserDto = UserDTO.Convert(invalidUser);
+
+            Assert.Equal(invalidUser.DateOfBirth, validUserDto.DateOfBirth);
+            Assert.Equal(invalidUser.FirstName, validUserDto.FirstName);
+            Assert.Equal(invalidUser.LastName, validUserDto.LastName);
+
+            Assert.Equal(invalidUser.Address.StreetNumber, validUserDto.Address.StreetNumber);
+            Assert.Equal(invalidUser.Address.StreetNumberSuffix, validUserDto.Address.StreetNumberSuffix);
+            Assert.Equal(invalidUser.Address.StreetName, validUserDto.Address.StreetName);
+            Assert.Equal(invalidUser.Address.Suburb, validUserDto.Address.Suburb);
+            Assert.Equal(invalidUser.Address.City, validUserDto.Address.City);
+            Assert.Equal(invalidUser.Address.PostCode, validUserDto.Address.PostCode);
         }
 
         [Fact]
-        public void Convert_to_userDTO_should_match()
+        public void Convert_valid_user_to_userDTO_should_match()
         {
             var validUser = GetUser(true);
 
@@ -33,7 +45,7 @@ namespace Tests.Unit_Tests
         }
 
         [Fact]
-        public void Convert_to_user_should_throw()
+        public void Convert_invalid_userDto_to_user_should_throw()
         {
             var invalidUserDto = GetUserDto(false);
 
@@ -41,7 +53,7 @@ namespace Tests.Unit_Tests
         }
 
         [Fact]
-        public void Convert_to_user_should_match()
+        public void Convert_valid_userDto_to_user_should_match()
         {
             var validUserDto = GetUserDto(true);
             

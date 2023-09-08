@@ -175,7 +175,7 @@ public class UserTests
             var randomStringForAddressInfo = Random.Shared.Next(10000).ToString();
             await ctx.AddAsync(new User
             {
-                DateOfBirth = DateOnly.FromDateTime(DateTime.Now),
+                DateOfBirth = DateOnly.FromDateTime(DateTime.Now).AddYears(1),
                 FirstName = randomStringForUserInfo,
                 LastName = randomStringForUserInfo,
                 Address = new Address

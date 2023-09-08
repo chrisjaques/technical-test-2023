@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using FluentValidation;
-using TechnicalTest2023.Validators;
 
 namespace TechnicalTest2023.Models
 {
@@ -19,7 +17,8 @@ namespace TechnicalTest2023.Models
 
         public static UserDTO Convert(User user)
         {
-            var userDto = new UserDTO
+            // Intentionally don't validate date of birth here as it'll cause a headache
+            return new UserDTO
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -34,11 +33,6 @@ namespace TechnicalTest2023.Models
                     Suburb = user.Address.Suburb
                 }
             };
-
-            var validator = new UserDTOValidator();
-            validator.ValidateAndThrow(userDto);
-
-            return userDto;
         }
     }
 }
